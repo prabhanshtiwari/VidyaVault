@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Edu App</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    .fade-in {
+      animation: fadeIn 1s ease-in-out both;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+
+  <!-- Navbar -->
+  <nav class="bg-gray-800 p-4 shadow-md">
+    <div class="container mx-auto flex flex-wrap justify-between items-center">
+      <h1 class="text-2xl font-bold tracking-wide">My Edu App</h1>
+      <div class="flex flex-wrap gap-4 mt-2 md:mt-0 items-center">
+        
+        <a href="courses.html" class="hover:text-yellow-400 transition duration-300">Courses</a>
+        <a href="connect.html" class="hover:text-yellow-400 transition duration-300">Connect</a>
+        <a href="#faq" class="hover:text-yellow-400 transition duration-300">FAQs</a>
+        <a href="contact.html" class="hover:text-yellow-400 transition duration-300">Contact</a>
+        <a href="newsletter.html" class="hover:text-yellow-400 transition duration-300">Newsletter</a>
+        <a href="about.html" class="hover:text-yellow-400 transition duration-300">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Carousel Section -->
+  <section class="py-20 bg-gray-900">
+    <div class="container mx-auto text-center">
+      <h2 class="text-3xl font-semibold text-yellow-400 mb-10">Our Campus Life</h2>
+      
+      <!-- Carousel Wrapper -->
+      <div class="relative w-full max-w-4xl mx-auto">
+        <!-- Carousel Images -->
+        <div class="carousel-images overflow-hidden relative">
+          <div class="carousel-slide">
+            <img src="./images/carousel-imaages/ChatGPT Image Apr 13, 2025, 03_00_17 AM.png" alt="Campus Image 1" class="w-full h-64 object-cover rounded-lg shadow-lg">
+          </div>
+          <div class="carousel-slide">
+            <img src="https://via.placeholder.com/1200x600/2196F3/FFFFFF?text=Image+2" alt="Campus Image 2" class="w-full h-64 object-cover rounded-lg shadow-lg">
+          </div>
+          <div class="carousel-slide">
+            <img src="https://via.placeholder.com/1200x600/F44336/FFFFFF?text=Image+3" alt="Campus Image 3" class="w-full h-64 object-cover rounded-lg shadow-lg">
+          </div>
+          <div class="carousel-slide">
+            <img src="https://via.placeholder.com/1200x600/FFC107/FFFFFF?text=Image+4" alt="Campus Image 4" class="w-full h-64 object-cover rounded-lg shadow-lg">
+          </div>
+        </div>
+        
+        <!-- Carousel Controls -->
+        <button class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-black text-white px-4 py-2 rounded-full focus:outline-none" id="prevBtn">
+          &#10094;
+        </button>
+        <button class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-black text-white px-4 py-2 rounded-full focus:outline-none" id="nextBtn">
+          &#10095;
+        </button>
+      </div>
+    </div>
+  </section>
+  
+  <!-- JavaScript for Carousel -->
+  <script>
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slides = document.querySelectorAll('.carousel-slide');
+    let index = 0;
+  
+    function showSlide(i) {
+      if (i >= slides.length) {
+        index = 0;
+      } else if (i < 0) {
+        index = slides.length - 1;
+      }
+      slides.forEach(slide => {
+        slide.classList.add('hidden');
+      });
+      slides[index].classList.remove('hidden');
+    }
+  
+    nextBtn.addEventListener('click', () => {
+      index++;
+      showSlide(index);
+    });
+  
+    prevBtn.addEventListener('click', () => {
+      index--;
+      showSlide(index);
+    });
+  
+    // Initialize carousel
+    showSlide(index);
+  </script>
+  
+  <!-- Hero Section -->
+  <section class="text-center py-24 bg-gradient-to-br from-gray-800 via-gray-900 to-black fade-in">
+    <h2 class="text-4xl font-extrabold mb-4 text-yellow-400">Welcome to My Edu App</h2>
+    <p class="text-lg text-gray-300 max-w-2xl mx-auto mb-8">
+      Your one-stop platform for BCA and BTech learning resources – notes, video lectures, and previous year questions.
+    </p>
+    <a href="#courses" class="bg-yellow-400 text-black px-6 py-3 rounded-full font-semibold hover:bg-yellow-300 transition duration-300">Browse Courses</a>
+  </section>
+
+  <!-- Courses Section -->
+  <section id="courses" class="py-20 px-4 fade-in bg-gray-900">
+    <div class="container mx-auto text-center">
+      <h2 class="text-3xl font-semibold mb-10 text-yellow-400">Available Courses</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-gray-800 p-6 shadow-lg rounded-lg hover:scale-105 transform transition duration-300">
+          <h3 class="text-xl font-semibold mb-4">BCA</h3>
+          <p class="mb-4 text-gray-300">Explore all subjects in the BCA curriculum with useful study resources.</p>
+          <a href="bca.html" class="bg-yellow-400 text-black px-5 py-2 rounded-full hover:bg-yellow-300 transition duration-300">View BCA</a>
+        </div>
+        <div class="bg-gray-800 p-6 shadow-lg rounded-lg hover:scale-105 transform transition duration-300">
+          <h3 class="text-xl font-semibold mb-4">BTech</h3>
+          <p class="mb-4 text-gray-300">Get access to notes, videos, and past year papers for BTech courses.</p>
+          <a href="btech.html" class="bg-yellow-400 text-black px-5 py-2 rounded-full hover:bg-yellow-300 transition duration-300">View BTech</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-20 bg-gray-800">
+    <div class="container mx-auto text-center">
+      <h2 class="text-3xl font-semibold text-yellow-400 mb-10">Platform Features</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-gray-700 p-6 rounded-lg shadow-lg hover:scale-105 transform transition duration-300">
+          <h3 class="text-xl font-semibold mb-4">Comprehensive Resources</h3>
+          <p class="text-gray-300">Access notes, video lectures, and past papers all in one place.</p>
+        </div>
+        <div class="bg-gray-700 p-6 rounded-lg shadow-lg hover:scale-105 transform transition duration-300">
+          <h3 class="text-xl font-semibold mb-4">Expert Guidance</h3>
+          <p class="text-gray-300">Connect with alumni, mentors, and seniors for guidance and advice.</p>
+        </div>
+        <div class="bg-gray-700 p-6 rounded-lg shadow-lg hover:scale-105 transform transition duration-300">
+          <h3 class="text-xl font-semibold mb-4">Interactive Learning</h3>
+          <p class="text-gray-300">Engage with learning materials through interactive methods like quizzes and tests.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial Section -->
+  <section class="py-20 bg-gray-900 text-center">
+    <h2 class="text-3xl font-semibold text-yellow-400 mb-10">What Our Users Say</h2>
+    <div class="max-w-3xl mx-auto">
+      <div class="bg-gray-800 p-8 rounded-lg shadow-lg">
+        <p class="text-lg text-gray-300 mb-4">"My Edu App has been a game-changer for my BCA studies! The resources are comprehensive, and the platform is easy to navigate. It made learning so much more efficient."</p>
+        <p class="text-sm text-yellow-400"> Dhairya Singh</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+<section id="faq" class="py-20 bg-gray-800 text-center">
+    <h2 class="text-3xl font-semibold text-yellow-400 mb-10">Frequently Asked Questions</h2>
+    <div class="max-w-3xl mx-auto">
+  
+      <details class="mb-4 bg-gray-700 p-4 rounded-lg">
+        <summary class="text-xl text-yellow-400">Is there a fee for courses?</summary>
+        <p class="text-gray-300 mt-2">Some courses are free, while others may require a small fee for access to premium content and certifications. Check each course page for more details.</p>
+      </details>
+  
+      <details class="mb-4 bg-gray-700 p-4 rounded-lg">
+        <summary class="text-xl text-yellow-400">How can I connect with other students or alumni?</summary>
+        <p class="text-gray-300 mt-2">You can connect with students and alumni through our “Connect” section. There, you can send messages, ask questions, and join discussion groups for additional support.</p>
+      </details>
+  
+      <details class="mb-4 bg-gray-700 p-4 rounded-lg">
+        <summary class="text-xl text-yellow-400">Are there any live sessions or webinars?</summary>
+        <p class="text-gray-300 mt-2">Yes, we offer live sessions for selected courses. You will be notified about upcoming sessions through your dashboard or email notifications.</p>
+      </details>
+  
+      <details class="mb-4 bg-gray-700 p-4 rounded-lg">
+        <summary class="text-xl text-yellow-400">Can I become a mentor or contribute content?</summary>
+        <p class="text-gray-300 mt-2">Yes, if you have expertise in a certain subject, you can apply to become a mentor or contributor. Check the "Become a Mentor" section in the platform for more details and the application process.</p>
+      </details>
+  
+      <details class="mb-4 bg-gray-700 p-4 rounded-lg">
+        <summary class="text-xl text-yellow-400">What is the refund policy?</summary>
+        <p class="text-gray-300 mt-2">If you are not satisfied with a paid course, you can request a refund within 7 days of purchase. Please refer to our Refund Policy page for more information.</p>
+      </details>
+  
+      <details class="mb-4 bg-gray-700 p-4 rounded-lg">
+        <summary class="text-xl text-yellow-400">How can I contact support?</summary>
+        <p class="text-gray-300 mt-2">For any issues or inquiries, you can reach out to our support team through the "Contact Us" page, or directly email us at support@myeduapp.com.</p>
+      </details>
+    </div>
+  </section>
+  
+
+  <!-- Footer -->
+<footer class="bg-gray-900 text-white py-12 mt-10">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Logo and Description -->
+        <div class="mb-6 md:mb-0 text-center md:text-left">
+          <h1 class="text-2xl font-bold text-yellow-400">My Edu App</h1>
+          <p class="text-gray-400 mt-2">Your one-stop solution for BCA and BTech learning resources. Empowering students with the best study materials, expert guidance, and interactive learning tools.</p>
+        </div>
+  
+        <!-- Quick Links -->
+        <div class="mb-6 md:mb-0 text-center md:text-left">
+          <h4 class="text-xl font-semibold mb-4 text-yellow-400">Quick Links</h4>
+          <ul class="space-y-2">
+            <li><a href="#home" class="hover:text-yellow-400 transition duration-300">Home</a></li>
+            <li><a href="#courses" class="hover:text-yellow-400 transition duration-300">Courses</a></li>
+            <li><a href="#connect" class="hover:text-yellow-400 transition duration-300">Connect</a></li>
+            <li><a href="#faq" class="hover:text-yellow-400 transition duration-300">FAQs</a></li>
+            <li><a href="contact.html" class="hover:text-yellow-400 transition duration-300">Contact</a></li>
+          </ul>
+        </div>
+  
+        <!-- Social Media -->
+        <div class="mb-6 md:mb-0 text-center md:text-left">
+          <h4 class="text-xl font-semibold mb-4 text-yellow-400">Follow Us</h4>
+          <div class="flex justify-center md:justify-start space-x-6">
+            <a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm-1 15H9v-6h2v6zm0-8H9V7h2v2zm6 8h-2v-3.5c0-.88-.62-1.5-1.5-1.5s-1.5.62-1.5 1.5V17h-2v-6h2v1.8c.68-.5 1.5-.8 2.5-.8 1.85 0 3.5 1.65 3.5 3.5V17z"/></svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor"><path d="M22 12c0 5.52-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2s10 4.48 10 10zM12 8c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4 1.79-4 4-4zm0-6c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z"/></svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-yellow-400 transition duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 4c-1.06 0-2.06.39-2.83 1.07A5.004 5.004 0 0 0 18 7h-1c-2.21 0-4 1.79-4 4v1h2c.55 0 1 .45 1 1v7h-4v-7h3v-3h-3V8c0-2.21 1.79-4 4-4h1c0 2.76 2.24 5 5 5s5-2.24 5-5-2.24-5-5-5z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Footer Bottom -->
+      <div class="text-center mt-8 border-t border-gray-700 pt-6">
+        <p class="text-gray-400 text-sm">&copy; 2025 My Edu App. All rights reserved. Designed by <a href="https://prabhanshtiwari.netlify.app/" class="text-yellow-400 hover:underline">Prabhansh Tiwari</a>.</p>
+      </div>
+    </div>
+  </footer>
+  
+  
+
+</body>
+</html>
