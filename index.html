@@ -24,6 +24,13 @@
 </head>
 <body class="bg-gray-900 text-white font-sans">
 
+    <!-- Loader -->
+<div id="loader" class="fixed inset-0 flex items-center justify-center bg-gray-900 z-50">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-yellow-400 border-solid"></div>
+  </div>
+  
+
+
   <!-- Navbar -->
   <nav class="bg-gray-800 p-4 shadow-md">
     <div class="container mx-auto flex flex-wrap justify-between items-center">
@@ -252,6 +259,18 @@
   </footer>
   
   
-
+  <script>
+    // Force loader to show for at least 3 seconds
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const loader = document.getElementById('loader');
+        loader.classList.add('opacity-0');
+        setTimeout(() => {
+          loader.style.display = 'none';
+        }, 500); // wait for fade-out transition
+      }, 2000); // 3 seconds delay
+    });
+  </script>
+  
 </body>
 </html>
