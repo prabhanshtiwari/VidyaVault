@@ -44,6 +44,54 @@
     </div>
   </section>
 
+  <section id="subscribers-list-section" class="py-20 bg-gray-800 text-center">
+    <h2 class="text-4xl font-semibold text-yellow-400 mb-8">Subscribers List</h2>
+    <ul id="subscribers-list" class="text-lg text-gray-300 list-disc list-inside">
+      <!-- Subscriber emails will appear here -->
+    </ul>
+  </section>
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDv4089hst795UFeOMcE9_Sgx973idkUbg",
+      authDomain: "newsletter-fafa4.firebaseapp.com",
+      projectId: "newsletter-fafa4",
+      storageBucket: "newsletter-fafa4.appspot.com",
+      messagingSenderId: "362126767373",
+      appId: "1:362126767373:web:69b9078bb3195746f9ac44",
+      measurementId: "G-16MYH2JV03"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+  
+    // Fetch and display subscribers
+    window.addEventListener('DOMContentLoaded', async () => {
+      const subscribersList = document.getElementById('subscribers-list');
+      
+      try {
+        // Fetch documents from 'subscribers' collection
+        const querySnapshot = await getDocs(collection(db, "subscribers"));
+        
+        // Iterate over the documents and add them to the list
+        querySnapshot.forEach((doc) => {
+          const subscriber = doc.data();
+          const li = document.createElement('li');
+          li.textContent = `${subscriber.email} - ${new Date(subscriber.timestamp.seconds * 1000).toLocaleString()}`;
+          subscribersList.appendChild(li);
+        });
+      } catch (error) {
+        console.error("Error fetching subscribers: ", error);
+      }
+    });
+  </script>
+  
+
   <!-- Footer -->
   <footer class="bg-gray-800 py-12">
     <div class="max-w-6xl mx-auto text-center">
