@@ -3,18 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DBMS - My Edu App</title>
+  <title>DBMS - Vidya Vault</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <style>
+    .profile-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 0.5rem;
+      z-index: 50;
+    }
+    .profile-container:hover .profile-menu {
+      display: block;
+    }
+  </style>
 </head>
 <body class="bg-gray-50 font-sans">
+  <!-- Auth Check -->
+  <script>
+    // Initialize Firebase with your config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDv4089hst795UFeOMcE9_Sgx973idkUbg",
+      authDomain: "newsletter-fafa4.firebaseapp.com",
+      projectId: "newsletter-fafa4",
+      storageBucket: "newsletter-fafa4.appspot.com",
+      messagingSenderId: "362126767373",
+      appId: "1:362126767373:web:69b9078bb3195746f9ac44",
+      measurementId: "G-16MYH2JV03"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Check if user is logged in
+    firebase.auth().onAuthStateChanged((user) => {
+      if (!user) {
+        // If user is not logged in, redirect to login
+        window.location.href = 'login.html';
+      }
+    });
+  </script>
 
   <!-- Navbar -->
   <nav class="bg-blue-600 p-4 text-white">
     <div class="container mx-auto flex justify-between items-center">
-      <h1 class="text-xl font-bold">My Edu App</h1>
-      <div>
+      <h1 class="text-xl font-bold">Vidya Vault</h1>
+      <div class="flex items-center space-x-4">
         <a href="index.html" class="px-4 py-2 hover:bg-blue-500">Home</a>
         <a href="bca.html" class="px-4 py-2 hover:bg-blue-500">BCA</a>
+        
+        <!-- Profile Section -->
+        <div class="profile-container relative">
+          <div id="profileButton" class="w-10 h-10 rounded-full bg-yellow-400 flex items-center justify-center cursor-pointer">
+            <span id="profileInitial" class="text-gray-900 font-bold text-lg">?</span>
+          </div>
+          <!-- Profile Menu -->
+          <div class="profile-menu bg-blue-700 rounded-lg shadow-lg py-4 px-6 min-w-[200px] border border-blue-600">
+            <div id="userInfo" class="hidden">
+              <p id="userName" class="text-yellow-400 font-semibold mb-1"></p>
+              <p id="userEmail" class="text-gray-300 text-sm mb-4"></p>
+              <button onclick="logout()" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300">
+                Logout
+              </button>
+            </div>
+            <div id="loginPrompt">
+              <p class="text-gray-300 mb-4">Please log in to access your profile</p>
+              <a href="login.html" class="block w-full bg-yellow-400 text-center text-gray-900 px-4 py-2 rounded hover:bg-yellow-500 transition duration-300">
+                Login
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
@@ -69,8 +130,48 @@
 
   <!-- Footer -->
   <footer class="bg-blue-600 text-white text-center py-4 mt-10">
-    <p>&copy; 2025 My Edu App. All rights reserved.</p>
+    <p>&copy; 2025 Vidya Vault. All rights reserved.</p>
   </footer>
 
+  <script>
+    // Function to update profile UI
+    function updateProfileUI(user) {
+      const profileInitial = document.getElementById('profileInitial');
+      const userInfo = document.getElementById('userInfo');
+      const loginPrompt = document.getElementById('loginPrompt');
+      const userName = document.getElementById('userName');
+      const userEmail = document.getElementById('userEmail');
+
+      if (user) {
+        // User is signed in
+        profileInitial.textContent = user.displayName ? user.displayName[0].toUpperCase() : user.email[0].toUpperCase();
+        userName.textContent = user.displayName || 'User';
+        userEmail.textContent = user.email;
+        userInfo.classList.remove('hidden');
+        loginPrompt.classList.add('hidden');
+      } else {
+        // No user is signed in
+        profileInitial.textContent = '?';
+        userInfo.classList.add('hidden');
+        loginPrompt.classList.remove('hidden');
+      }
+    }
+
+    // Logout function
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        // Sign-out successful
+        window.location.href = 'login.html';
+      }).catch((error) => {
+        // An error happened
+        console.error('Error signing out:', error);
+      });
+    }
+
+    // Listen for authentication state changes
+    firebase.auth().onAuthStateChanged((user) => {
+      updateProfileUI(user);
+    });
+  </script>
 </body>
 </html>

@@ -3,9 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Newsletter Subscription</title>
+  <title>Newsletter Subscription - Vidya Vault</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <style>
+    .profile-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 0.5rem;
+      z-index: 50;
+    }
+    .profile-menu.active {
+      display: block;
+    }
+  </style>
   <script>
     (function(){
       emailjs.init("H4RGHXl-wVcnEQ4bW"); // Your public key
@@ -13,17 +29,121 @@
   </script>
 </head>
 <body class="bg-gray-900 text-white font-sans">
+  <!-- Auth Check -->
+  <script>
+    // Initialize Firebase with your config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDv4089hst795UFeOMcE9_Sgx973idkUbg",
+      authDomain: "newsletter-fafa4.firebaseapp.com",
+      projectId: "newsletter-fafa4",
+      storageBucket: "newsletter-fafa4.appspot.com",
+      messagingSenderId: "362126767373",
+      appId: "1:362126767373:web:69b9078bb3195746f9ac44",
+      measurementId: "G-16MYH2JV03"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Check if user is logged in and update UI
+    firebase.auth().onAuthStateChanged((user) => {
+      if (!user && !window.location.pathname.includes('login.html') && !window.location.pathname.includes('signup.html')) {
+        // If user is not logged in and not on login/signup page, redirect to login
+        window.location.href = 'login.html';
+      }
+      updateProfileUI(user);
+    });
+
+    // Function to update profile UI
+    function updateProfileUI(user) {
+      const profileInitial = document.getElementById('profileInitial');
+      const userInfo = document.getElementById('userInfo');
+      const loginPrompt = document.getElementById('loginPrompt');
+      const userName = document.getElementById('userName');
+      const userEmail = document.getElementById('userEmail');
+
+      if (user) {
+        // User is signed in
+        profileInitial.textContent = user.displayName ? user.displayName[0].toUpperCase() : user.email[0].toUpperCase();
+        userName.textContent = user.displayName || 'User';
+        userEmail.textContent = user.email;
+        userInfo.classList.remove('hidden');
+        loginPrompt.classList.add('hidden');
+      } else {
+        // No user is signed in
+        profileInitial.textContent = '?';
+        userInfo.classList.add('hidden');
+        loginPrompt.classList.remove('hidden');
+      }
+    }
+
+    // Logout function
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        // Sign-out successful
+        window.location.href = 'login.html';
+      }).catch((error) => {
+        // An error happened
+        console.error('Error signing out:', error);
+      });
+    }
+
+    // Profile menu toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const profileButton = document.getElementById('profileButton');
+      const profileMenu = document.querySelector('.profile-menu');
+      
+      // Toggle menu when profile button is clicked
+      profileButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        profileMenu.classList.toggle('active');
+      });
+      
+      // Close menu when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!profileMenu.contains(e.target) && !profileButton.contains(e.target)) {
+          profileMenu.classList.remove('active');
+        }
+      });
+      
+      // Prevent menu from closing when clicking inside it
+      profileMenu.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    });
+  </script>
 
   <!-- Header -->
   <header class="bg-gray-800 py-8">
     <div class="max-w-6xl mx-auto flex justify-between items-center">
-      <a href="/" class="text-3xl font-bold text-yellow-400">MyEduApp</a>
+      <a href="/" class="text-3xl font-bold text-yellow-400">Vidya Vault</a>
       <nav>
-        <ul class="flex space-x-8">
+        <ul class="flex space-x-8 items-center">
           <li><a href="./index.html" class="text-yellow-400 hover:text-yellow-500">Home</a></li>
           <li><a href="about.html" class="text-yellow-400 hover:text-yellow-500">About</a></li>
           <li><a href="courses.html" class="text-yellow-400 hover:text-yellow-500">Courses</a></li>
           <li><a href="contact.html" class="text-yellow-400 hover:text-yellow-500">Contact</a></li>
+          
+          <!-- Profile Section -->
+          <li class="profile-container relative">
+            <div id="profileButton" class="w-10 h-10 rounded-full bg-yellow-400 flex items-center justify-center cursor-pointer">
+              <span id="profileInitial" class="text-gray-900 font-bold text-lg">?</span>
+            </div>
+            <!-- Profile Menu -->
+            <div class="profile-menu bg-gray-800 rounded-lg shadow-lg py-4 px-6 min-w-[200px] border border-gray-700">
+              <div id="userInfo" class="hidden">
+                <p id="userName" class="text-yellow-400 font-semibold mb-1"></p>
+                <p id="userEmail" class="text-gray-400 text-sm mb-4"></p>
+                <button onclick="logout()" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300">
+                  Logout
+                </button>
+              </div>
+              <div id="loginPrompt">
+                <p class="text-gray-400 mb-4">Please log in to access your profile</p>
+                <a href="login.html" class="block w-full bg-yellow-400 text-center text-gray-900 px-4 py-2 rounded hover:bg-yellow-500 transition duration-300">
+                  Login
+                </a>
+              </div>
+            </div>
+          </li>
         </ul>
       </nav>
     </div>
@@ -56,16 +176,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
     import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDv4089hst795UFeOMcE9_Sgx973idkUbg",
-      authDomain: "newsletter-fafa4.firebaseapp.com",
-      projectId: "newsletter-fafa4",
-      storageBucket: "newsletter-fafa4.appspot.com",
-      messagingSenderId: "362126767373",
-      appId: "1:362126767373:web:69b9078bb3195746f9ac44",
-      measurementId: "G-16MYH2JV03"
-    };
-
+    // Use the existing Firebase config from the auth script
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
@@ -153,7 +264,7 @@
   <!-- Footer -->
   <footer class="bg-gray-800 py-12">
     <div class="max-w-6xl mx-auto text-center">
-      <p class="text-gray-400 mb-4">© 2025 MyEduApp. All rights reserved.</p>
+      <p class="text-gray-400 mb-4">© 2025 Vidya Vault. All rights reserved.</p>
       <div class="flex justify-center space-x-8">
         <a href="#" class="text-yellow-400 hover:text-yellow-500">Privacy Policy</a>
         <a href="#" class="text-yellow-400 hover:text-yellow-500">Terms of Service</a>

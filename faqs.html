@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FAQs - United University BCA Help</title>
+  <title>FAQs - Vidya Vault</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.12.0/cdn.min.js" defer></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <style>
     .fade-enter {
       opacity: 0;
@@ -16,16 +19,142 @@
       transform: translateY(0);
       transition: opacity 0.3s ease-out, transform 0.3s ease-out;
     }
+    .profile-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 0.5rem;
+      z-index: 50;
+    }
+    .profile-menu.active {
+      display: block;
+    }
   </style>
 </head>
 <body class="bg-gray-900 text-gray-200 min-h-screen">
-  <header class="bg-blue-800 text-white p-6 text-center text-3xl font-bold shadow-lg">
-    Frequently Asked Questions (FAQs)
+  <!-- Auth Check -->
+  <script>
+    // Initialize Firebase with your config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDv4089hst795UFeOMcE9_Sgx973idkUbg",
+      authDomain: "newsletter-fafa4.firebaseapp.com",
+      projectId: "newsletter-fafa4",
+      storageBucket: "newsletter-fafa4.appspot.com",
+      messagingSenderId: "362126767373",
+      appId: "1:362126767373:web:69b9078bb3195746f9ac44",
+      measurementId: "G-16MYH2JV03"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Check if user is logged in
+    firebase.auth().onAuthStateChanged((user) => {
+      if (!user && !window.location.pathname.includes('login.html') && !window.location.pathname.includes('signup.html')) {
+        // If user is not logged in and not on login/signup page, redirect to login
+        window.location.href = 'login.html';
+      }
+      updateProfileUI(user);
+    });
+
+    // Function to update profile UI
+    function updateProfileUI(user) {
+      const profileInitial = document.getElementById('profileInitial');
+      const userInfo = document.getElementById('userInfo');
+      const loginPrompt = document.getElementById('loginPrompt');
+      const userName = document.getElementById('userName');
+      const userEmail = document.getElementById('userEmail');
+
+      if (user) {
+        // User is signed in
+        profileInitial.textContent = user.displayName ? user.displayName[0].toUpperCase() : user.email[0].toUpperCase();
+        userName.textContent = user.displayName || 'User';
+        userEmail.textContent = user.email;
+        userInfo.classList.remove('hidden');
+        loginPrompt.classList.add('hidden');
+      } else {
+        // No user is signed in
+        profileInitial.textContent = '?';
+        userInfo.classList.add('hidden');
+        loginPrompt.classList.remove('hidden');
+      }
+    }
+
+    // Logout function
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        // Sign-out successful
+        window.location.href = 'login.html';
+      }).catch((error) => {
+        // An error happened
+        console.error('Error signing out:', error);
+      });
+    }
+
+    // Profile menu toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const profileButton = document.getElementById('profileButton');
+      const profileMenu = document.querySelector('.profile-menu');
+      
+      // Toggle menu when profile button is clicked
+      profileButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        profileMenu.classList.toggle('active');
+      });
+      
+      // Close menu when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!profileMenu.contains(e.target) && !profileButton.contains(e.target)) {
+          profileMenu.classList.remove('active');
+        }
+      });
+      
+      // Prevent menu from closing when clicking inside it
+      profileMenu.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    });
+  </script>
+
+  <header class="bg-gray-800 py-8">
+    <div class="max-w-6xl mx-auto flex justify-between items-center px-4">
+      <a href="/" class="text-3xl font-bold text-yellow-400">Vidya Vault</a>
+      <nav>
+        <ul class="flex space-x-8 items-center">
+          <li><a href="index.html" class="text-yellow-400 hover:text-yellow-500">Home</a></li>
+          <li><a href="about.html" class="text-yellow-400 hover:text-yellow-500">About</a></li>
+          <li><a href="courses.html" class="text-yellow-400 hover:text-yellow-500">Courses</a></li>
+          <li><a href="newsletter.html" class="text-yellow-400 hover:text-yellow-500">Newsletter</a></li>
+          
+          <!-- Profile Section -->
+          <li class="profile-container relative">
+            <div id="profileButton" class="w-10 h-10 rounded-full bg-yellow-400 flex items-center justify-center cursor-pointer">
+              <span id="profileInitial" class="text-gray-900 font-bold text-lg">?</span>
+            </div>
+            <!-- Profile Menu -->
+            <div class="profile-menu bg-gray-800 rounded-lg shadow-lg py-4 px-6 min-w-[200px] border border-gray-700">
+              <div id="userInfo" class="hidden">
+                <p id="userName" class="text-yellow-400 font-semibold mb-1"></p>
+                <p id="userEmail" class="text-gray-400 text-sm mb-4"></p>
+                <button onclick="logout()" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300">
+                  Logout
+                </button>
+              </div>
+              <div id="loginPrompt">
+                <p class="text-gray-400 mb-4">Please log in to access your profile</p>
+                <a href="login.html" class="block w-full bg-yellow-400 text-center text-gray-900 px-4 py-2 rounded hover:bg-yellow-500 transition duration-300">
+                  Login
+                </a>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </header>
 
   <main class="max-w-5xl mx-auto py-12 px-6 space-y-12">
     <section>
-      <h2 class="text-2xl font-semibold mb-4 text-blue-400">FAQs About This Website</h2>
+      <h2 class="text-2xl font-semibold mb-4 text-yellow-400">Frequently Asked Questions</h2>
       <template x-data="{ questions: [
         { q: 'What is this website about?', a: 'This platform is a dedicated resource hub for BCA students of United University, providing notes, PYQs, video lectures, syllabi, and more in a well-organized format.' },
         { q: 'How can I access the resources for a specific subject?', a: 'Go to the homepage, select your course (e.g., BCA), then choose your subject to access notes, PYQs, video lectures, and syllabus.' },
@@ -41,7 +170,7 @@
         <div class="space-y-6">
           <template x-for="(item, index) in questions" :key="index">
             <div x-data="{ open: false }" class="bg-gray-800 rounded-lg shadow-md overflow-hidden">
-              <button @click="open = !open" class="w-full text-left px-6 py-4 font-semibold text-lg text-white hover:bg-blue-700 focus:outline-none transition duration-300">
+              <button @click="open = !open" class="w-full text-left px-6 py-4 font-semibold text-lg text-white hover:bg-yellow-600 focus:outline-none transition duration-300">
                 <span x-text="item.q"></span>
               </button>
               <div x-show="open" x-transition class="px-6 pb-4 text-gray-300" x-text="item.a"></div>
@@ -53,7 +182,7 @@
   </main>
 
   <footer class="bg-gray-800 text-gray-400 py-6 text-center border-t border-gray-700">
-    &copy; 2025 United University Resources. All rights reserved.
+    &copy; 2025 Vidya Vault. All rights reserved.
   </footer>
 </body>
 </html>

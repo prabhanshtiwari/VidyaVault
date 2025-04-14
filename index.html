@@ -20,9 +20,105 @@
         transform: translateY(0);
       }
     }
+
+    .profile-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 0.5rem;
+      z-index: 50;
+    }
+    .profile-menu.active {
+      display: block;
+    }
   </style>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 </head>
 <body class="bg-gray-900 text-white font-sans">
+  <!-- Auth Check -->
+  <script>
+    // Initialize Firebase with your config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDv4089hst795UFeOMcE9_Sgx973idkUbg",
+      authDomain: "newsletter-fafa4.firebaseapp.com",
+      projectId: "newsletter-fafa4",
+      storageBucket: "newsletter-fafa4.appspot.com",
+      messagingSenderId: "362126767373",
+      appId: "1:362126767373:web:69b9078bb3195746f9ac44",
+      measurementId: "G-16MYH2JV03"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Check if user is logged in
+    firebase.auth().onAuthStateChanged((user) => {
+      if (!user && !window.location.pathname.includes('login.html') && !window.location.pathname.includes('signup.html')) {
+        // If user is not logged in and not on login/signup page, redirect to login
+        window.location.href = 'login.html';
+      }
+      updateProfileUI(user);
+    });
+
+    // Function to update profile UI
+    function updateProfileUI(user) {
+      const profileInitial = document.getElementById('profileInitial');
+      const userInfo = document.getElementById('userInfo');
+      const loginPrompt = document.getElementById('loginPrompt');
+      const userName = document.getElementById('userName');
+      const userEmail = document.getElementById('userEmail');
+
+      if (user) {
+        // User is signed in
+        profileInitial.textContent = user.displayName ? user.displayName[0].toUpperCase() : user.email[0].toUpperCase();
+        userName.textContent = user.displayName || 'User';
+        userEmail.textContent = user.email;
+        userInfo.classList.remove('hidden');
+        loginPrompt.classList.add('hidden');
+      } else {
+        // No user is signed in
+        profileInitial.textContent = '?';
+        userInfo.classList.add('hidden');
+        loginPrompt.classList.remove('hidden');
+      }
+    }
+
+    // Logout function
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        // Sign-out successful
+        window.location.href = 'login.html';
+      }).catch((error) => {
+        // An error happened
+        console.error('Error signing out:', error);
+      });
+    }
+
+    // Profile menu toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const profileButton = document.getElementById('profileButton');
+      const profileMenu = document.querySelector('.profile-menu');
+      
+      // Toggle menu when profile button is clicked
+      profileButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        profileMenu.classList.toggle('active');
+      });
+      
+      // Close menu when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!profileMenu.contains(e.target) && !profileButton.contains(e.target)) {
+          profileMenu.classList.remove('active');
+        }
+      });
+      
+      // Prevent menu from closing when clicking inside it
+      profileMenu.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    });
+  </script>
 
     <!-- Loader -->
 <div id="loader" class="fixed inset-0 flex items-center justify-center bg-gray-900 z-50">
@@ -36,13 +132,35 @@
     <div class="container mx-auto flex flex-wrap justify-between items-center">
       <h1 class="text-2xl font-bold tracking-wide">Vidya Vault</h1>
       <div class="flex flex-wrap gap-4 mt-2 md:mt-0 items-center">
-        
         <a href="courses.html" class="hover:text-yellow-400 transition duration-300">Courses</a>
         <a href="connect.html" class="hover:text-yellow-400 transition duration-300">Connect</a>
         <a href="#faq" class="hover:text-yellow-400 transition duration-300">FAQs</a>
         <a href="contact.html" class="hover:text-yellow-400 transition duration-300">Contact</a>
         <a href="newsletter.html" class="hover:text-yellow-400 transition duration-300">Newsletter</a>
         <a href="about.html" class="hover:text-yellow-400 transition duration-300">About</a>
+        
+        <!-- Profile Section -->
+        <div class="profile-container relative">
+          <div id="profileButton" class="w-10 h-10 rounded-full bg-yellow-400 flex items-center justify-center cursor-pointer">
+            <span id="profileInitial" class="text-gray-900 font-bold text-lg">?</span>
+          </div>
+          <!-- Profile Menu -->
+          <div class="profile-menu bg-gray-800 rounded-lg shadow-lg py-4 px-6 min-w-[200px] border border-gray-700">
+            <div id="userInfo" class="hidden">
+              <p id="userName" class="text-yellow-400 font-semibold mb-1"></p>
+              <p id="userEmail" class="text-gray-400 text-sm mb-4"></p>
+              <button onclick="logout()" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300">
+                Logout
+              </button>
+            </div>
+            <div id="loginPrompt">
+              <p class="text-gray-400 mb-4">Please log in to access your profile</p>
+              <a href="login.html" class="block w-full bg-yellow-400 text-center text-gray-900 px-4 py-2 rounded hover:bg-yellow-500 transition duration-300">
+                Login
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
@@ -117,7 +235,7 @@
   
   <!-- Hero Section -->
   <section class="text-center py-24 bg-gradient-to-br from-gray-800 via-gray-900 to-black fade-in">
-    <h2 class="text-4xl font-extrabold mb-4 text-yellow-400">Welcome to My Edu App</h2>
+    <h2 class="text-4xl font-extrabold mb-4 text-yellow-400">Welcome to Vidya Vault</h2>
     <p class="text-lg text-gray-300 max-w-2xl mx-auto mb-8">
       Your one-stop platform for BCA and BTech learning resources – notes, video lectures, and previous year questions.
     </p>
@@ -169,7 +287,7 @@
     <h2 class="text-3xl font-semibold text-yellow-400 mb-10">What Our Users Say</h2>
     <div class="max-w-3xl mx-auto">
       <div class="bg-gray-800 p-8 rounded-lg shadow-lg">
-        <p class="text-lg text-gray-300 mb-4">"My Edu App has been a game-changer for my BCA studies! The resources are comprehensive, and the platform is easy to navigate. It made learning so much more efficient."</p>
+        <p class="text-lg text-gray-300 mb-4">"Vidya Vault has been a game-changer for my BCA studies! The resources are comprehensive, and the platform is easy to navigate. It made learning so much more efficient."</p>
         <p class="text-sm text-yellow-400"> Dhairya Singh</p>
       </div>
     </div>
@@ -187,7 +305,7 @@
   
       <details class="mb-4 bg-gray-700 p-4 rounded-lg">
         <summary class="text-xl text-yellow-400">How can I connect with other students or alumni?</summary>
-        <p class="text-gray-300 mt-2">You can connect with students and alumni through our “Connect” section. There, you can send messages, ask questions, and join discussion groups for additional support.</p>
+        <p class="text-gray-300 mt-2">You can connect with students and alumni through our "Connect" section. There, you can send messages, ask questions, and join discussion groups for additional support.</p>
       </details>
   
       <details class="mb-4 bg-gray-700 p-4 rounded-lg">
@@ -207,7 +325,7 @@
   
       <details class="mb-4 bg-gray-700 p-4 rounded-lg">
         <summary class="text-xl text-yellow-400">How can I contact support?</summary>
-        <p class="text-gray-300 mt-2">For any issues or inquiries, you can reach out to our support team through the "Contact Us" page, or directly email us at support@myeduapp.com.</p>
+        <p class="text-gray-300 mt-2">For any issues or inquiries, you can reach out to our support team through the "Contact Us" page, or directly email us at support@vidyavault.com.</p>
       </details>
     </div>
   </section>
@@ -272,6 +390,5 @@
       }, 2000); // 3 seconds delay
     });
   </script>
-  
 </body>
 </html>
